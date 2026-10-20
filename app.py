@@ -10,7 +10,7 @@ from streamlit.errors import StreamlitSecretNotFoundError
 from supabase import Client, create_client
 from supabase_auth.errors import AuthApiError
 
-from quiz import QUESTIONS, add_country_flags, run_read_only_query
+from quiz import COUNTRY_FLAGS, QUESTIONS, add_country_flags, run_read_only_query
 
 
 st.set_page_config(page_title="Economics SQL Quiz", page_icon="📊", layout="wide")
@@ -40,6 +40,30 @@ st.markdown(
         font-size: 1.15rem;
         margin-bottom: 0.25rem;
     }
+    .country-flag-strip {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 0.5rem;
+        overflow: hidden;
+        padding: 0.7rem 0.9rem;
+        margin: 0.7rem 0 0.9rem;
+        border: 1px solid rgba(40, 95, 168, 0.13);
+        border-radius: 0.9rem;
+        background: linear-gradient(110deg, rgba(40, 95, 168, 0.08), rgba(255, 255, 255, 0.55));
+    }
+    .country-flag-strip span {
+        font-size: clamp(1.15rem, 3vw, 1.8rem);
+        line-height: 1;
+        filter: saturate(0.82);
+    }
+    .country-flag-strip__label {
+        display: block;
+        margin-top: -0.45rem;
+        margin-bottom: 0.8rem;
+        color: rgba(49, 51, 63, 0.68);
+        font-size: 0.82rem;
+    }
     @media (max-width: 480px) {
         .economist-guide {
             gap: 0.65rem;
@@ -60,11 +84,16 @@ ECONOMIST_GUIDE = """
 <div class="economist-guide">
   <svg class="economist-guide__portrait" viewBox="0 0 100 126"
        role="img" aria-labelledby="economist-title" xmlns="http://www.w3.org/2000/svg">
-    <title id="economist-title">Illustration of a young Black economist in a blue, black, and white dress</title>
+    <title id="economist-title">Illustration of a young Black economist with an afro, wearing a blue, black, and white dress</title>
     <circle cx="50" cy="50" r="43" fill="#e7f0fc"/>
-    <path d="M27 43c-4-22 8-34 24-34 18 0 27 13 23 35l-4 14H31z" fill="#171717"/>
+    <path d="M32 59c-7-3-10-10-7-17-6-7-4-16 3-21-1-9 7-16 15-14 5-8 16-8 21-1 9-2 17 5 16 14 8 5 10 14 4 21 3 8-1 15-8 18l-7-3H37z" fill="#171717"/>
+    <circle cx="34" cy="27" r="2.2" fill="#302b2b"/>
+    <circle cx="43" cy="19" r="2" fill="#302b2b"/>
+    <circle cx="54" cy="17" r="2.2" fill="#302b2b"/>
+    <circle cx="65" cy="21" r="2" fill="#302b2b"/>
+    <circle cx="73" cy="30" r="2.2" fill="#302b2b"/>
     <ellipse cx="51" cy="43" rx="19" ry="23" fill="#75452f"/>
-    <path d="M32 40c0-19 8-28 20-28 13 0 22 9 22 25-7-3-11-8-14-15-7 8-16 13-28 14z" fill="#171717"/>
+    <path d="M33 34c4-11 12-16 20-16 9 0 15 4 19 12-7-2-12-5-15-10-7 7-15 11-24 14z" fill="#171717"/>
     <path d="M42 43h5m10 0h5" stroke="#211915" stroke-width="2" stroke-linecap="round"/>
     <path d="M47 53c3 2 6 2 9 0" fill="none" stroke="#512b22" stroke-width="1.7" stroke-linecap="round"/>
     <path d="M38 66l-8 7-8 26 9 3 9-17 1 34h39l-1-34 9 17 8-4-10-27-13-8-12-3H49z" fill="#285fa8"/>
@@ -75,12 +104,23 @@ ECONOMIST_GUIDE = """
     <path d="M43 119h36" stroke="#17202b" stroke-width="2"/>
   </svg>
   <div class="economist-guide__copy">
-    <strong>Meet your economist guide</strong>
-    A 25-year-old Black economist, illustrated in a blue, black, and white dress,
-    is here to cheer you on through the data lab. 📈
+      <strong>Meet your economist &amp; data-scientist guide</strong>
+      Your 25-year-old Black guide rocks a natural afro and a blue, black, and white
+      dress, and is here to cheer you on through the data lab. 📈
   </div>
 </div>
 """
+
+COUNTRY_FLAG_STRIP = (
+    '<div class="country-flag-strip" role="img" aria-label="Flags of the countries '
+    'in the economics dataset">'
+    + "".join(
+        f'<span title="{country}" aria-hidden="true">{flag}</span>'
+        for country, flag in COUNTRY_FLAGS.items()
+    )
+    + "</div>"
+    '<div class="country-flag-strip__label">Exploring 10 economies across Africa and the Indian Ocean</div>'
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
@@ -221,8 +261,9 @@ selected_index = st.selectbox(
 )
 question = QUESTIONS[selected_index]
 st.subheader(f"Question {question['number']} · {question['points']} points")
+st.markdown(COUNTRY_FLAG_STRIP, unsafe_allow_html=True)
 st.markdown(question["prompt"])
-st.caption("🐼 Professor Panda's tip: run your query, inspect the rows, then save your solution.")
+st.caption("Your economist guide's tip: run your query, inspect the rows, then save your solution.")
 
 with st.expander("Hint: expected SQL and result"):
     st.code(question["sql"], language="sql")
