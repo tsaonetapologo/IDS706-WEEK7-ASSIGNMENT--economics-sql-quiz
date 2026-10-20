@@ -109,12 +109,19 @@ ECONOMIST_GUIDE = """
     <path d="M70 65l13 8 8 26-9 4-9-17 1 32H69l-3-24 7-18-9-8z" fill="#171717"/>
     <path d="M50 71l5 4 5-4" fill="none" stroke="#285fa8" stroke-width="2"/>
     <path d="M21 102l9 3m58-3-9 3" stroke="#75452f" stroke-width="4" stroke-linecap="round"/>
+    <path d="M26 77c2-4 6-6 10-5l1 8-8 5z" fill="#75452f"/>
+    <path d="M24 75l13-2 2 15-13 2z" fill="#c9e6f2" stroke="#173d5a" stroke-width="1.5"/>
+    <path d="M25 78l12-2m-12 5 12-2m-12 5 12-2" stroke="#fff" stroke-width="1.5" opacity=".9"/>
+    <path d="M24 75l13-2 1 4-13 2z" fill="#173d5a"/>
+    <path d="M29 73l1-3h3l1 3" fill="#173d5a"/>
+    <path d="M31 71c1-2 2-2 3 0m-1-2 2 2" fill="none" stroke="#9b5b32" stroke-width="1.5" stroke-linecap="round"/>
     <path d="M43 119h36" stroke="#17202b" stroke-width="2"/>
   </svg>
   <div class="economist-guide__copy">
       <strong>Meet economist turned data scientist, Tsaone</strong>
       Your 25-year-old Black guide rocks a natural afro and a blue, black, and white
-      dress, and is here to cheer you on through the data lab. 📈
+      dress, and is here to cheer you on through the data lab with an iced coffee
+      in hand. 📈
   </div>
 </div>
 """
