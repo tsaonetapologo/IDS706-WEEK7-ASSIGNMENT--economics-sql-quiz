@@ -14,6 +14,35 @@ from quiz import QUESTIONS, run_read_only_query
 
 
 st.set_page_config(page_title="Economics SQL Quiz", page_icon="📊", layout="wide")
+st.markdown(
+    """
+    <style>
+    .quiz-mascot {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        padding: 1rem 1.25rem;
+        margin: 0.25rem 0 1rem;
+        border: 1px solid rgba(49, 51, 63, 0.15);
+        border-radius: 1rem;
+        background: linear-gradient(115deg, rgba(255, 205, 86, 0.2), rgba(82, 196, 166, 0.13));
+    }
+    .quiz-mascot__face {
+        font-size: 2.6rem;
+        line-height: 1;
+    }
+    .quiz-mascot__copy {
+        font-size: 1rem;
+    }
+    .quiz-mascot__copy strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.15rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
@@ -63,6 +92,18 @@ def show_authentication() -> bool:
 
     st.title("📊 Economics SQL Quiz")
     st.write("Sign in or create an account to write and run SQL against the live database.")
+    st.markdown(
+        """
+        <div class="quiz-mascot">
+          <span class="quiz-mascot__face" role="img" aria-label="Professor Panda">🐼</span>
+          <div class="quiz-mascot__copy">
+            <strong>Professor Panda says: ready, set, SELECT!</strong>
+            Sign in to explore the data and save your SQL work.
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     sign_in_tab, sign_up_tab = st.tabs(["Sign in", "Create account"])
 
     with sign_in_tab:
@@ -116,6 +157,20 @@ st.write(
     "Write SQL for each question, run it against the live `economic_indicators` "
     "table, and compare your result with the expected output."
 )
+st.markdown(
+    """
+    <div class="quiz-mascot">
+      <span class="quiz-mascot__face" role="img" aria-label="Professor Panda">🐼</span>
+      <div class="quiz-mascot__copy">
+        <strong>Professor Panda's data lab</strong>
+        Five SQL challenges, live country data, and 20 points up for grabs. Keep
+        queries curious and read-only!
+      </div>
+      <span class="quiz-mascot__face" role="img" aria-label="Sparkles">✨</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 st.info("Five coding questions · 4 points each · 20 points total")
 
 if not SUPABASE_DATABASE_URL:
@@ -150,6 +205,7 @@ selected_index = st.selectbox(
 question = QUESTIONS[selected_index]
 st.subheader(f"Question {question['number']} · {question['points']} points")
 st.markdown(question["prompt"])
+st.caption("🐼 Professor Panda's tip: run your query, inspect the rows, then save your solution.")
 
 with st.expander("Hint: expected SQL and result"):
     st.code(question["sql"], language="sql")
