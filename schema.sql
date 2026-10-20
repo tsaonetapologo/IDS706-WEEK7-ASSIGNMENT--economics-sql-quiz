@@ -1,7 +1,7 @@
 -- Run once in the Supabase SQL Editor for the project used by this app.
-
 CREATE TABLE IF NOT EXISTS public.economic_indicators (
     country text NOT NULL,
+    year integer NOT NULL,
     gdp_per_capita numeric NOT NULL,
     inflation_rate numeric NOT NULL,
     unemployment_rate numeric NOT NULL,
@@ -13,23 +13,25 @@ CREATE UNIQUE INDEX IF NOT EXISTS economic_indicators_country_quiz_uidx
 
 INSERT INTO public.economic_indicators (
     country,
+    year,
     gdp_per_capita,
     inflation_rate,
     unemployment_rate,
     population
 )
 VALUES
-    ('Botswana', 7200, 3.2, 25.9, 2630000),
-    ('Ghana', 2400, 22.8, 14.7, 34100000),
-    ('Kenya', 2200, 4.5, 5.7, 56400000),
-    ('Mauritius', 12500, 4.0, 6.0, 1260000),
-    ('Namibia', 4800, 4.2, 19.4, 3030000),
-    ('Nigeria', 1600, 24.5, 5.0, 232000000),
-    ('Rwanda', 1100, 4.8, 14.9, 14000000),
-    ('South Africa', 6500, 4.4, 32.5, 64000000),
-    ('Uganda', 1100, 3.3, 9.0, 50000000),
-    ('Zambia', 1300, 15.0, 13.0, 21300000)
+    ('Botswana', 2024, 7200, 3.2, 25.9, 2630000),
+    ('Ghana', 2024, 2400, 22.8, 14.7, 34100000),
+    ('Kenya', 2024, 2200, 4.5, 5.7, 56400000),
+    ('Mauritius', 2024, 12500, 4.0, 6.0, 1260000),
+    ('Namibia', 2024, 4800, 4.2, 19.4, 3030000),
+    ('Nigeria', 2024, 1600, 24.5, 5.0, 232000000),
+    ('Rwanda', 2024, 1100, 4.8, 14.9, 14000000),
+    ('South Africa', 2024, 6500, 4.4, 32.5, 64000000),
+    ('Uganda', 2024, 1100, 3.3, 9.0, 50000000),
+    ('Zambia', 2024, 1300, 15.0, 13.0, 21300000)
 ON CONFLICT (country) DO UPDATE SET
+    year = EXCLUDED.year,
     gdp_per_capita = EXCLUDED.gdp_per_capita,
     inflation_rate = EXCLUDED.inflation_rate,
     unemployment_rate = EXCLUDED.unemployment_rate,
