@@ -8,6 +8,20 @@ economics questions, run it against the live `economic_indicators` table, see
 the result rows, and save their SQL for later. Each question is worth 4 points,
 for 20 points total.
 
+## Student quiz instructions
+
+1. Create an account or sign in.
+2. Choose a question and write a SQL query.
+3. Select **Run query** to use one of your three attempts for that question.
+   Attempts are counted when **Run query** is selected, including when the
+   query returns an error.
+4. Review the result and try again if needed. After the third attempt, the
+   query editor and query buttons are locked for that question.
+5. Select **Show correct answer** to reveal the example SQL and expected result.
+
+Each question has its own three-attempt limit. The expected result can also be
+previewed in the hint expander.
+
 ## Stack and access controls
 
 - **Hosted database and authentication:** Supabase PostgreSQL and Supabase Auth.
@@ -68,9 +82,8 @@ streamlit run app.py
 Open the local URL printed by Streamlit, create an account or sign in, choose a
 question, write SQL, and select **Run query** to see live database rows.
 **Save query** stores that question's SQL under the signed-in user's account.
-Use the hint expander to preview the expected result. Each question allows three
-query attempts; after the third, query submission is locked. Click **Show correct
-answer** to reveal the example SQL and expected result.
+Follow the [student quiz instructions](#student-quiz-instructions) for the
+attempt limit and answer reveal.
 
 Run the local test suite with:
 
@@ -112,4 +125,5 @@ All questions require writing SQL; none are multiple choice. They cover
 sorting, filtering, aggregation, counting, and population thresholds. Students
 can compare their result with the expected rows, and reveal the example SQL
 after three attempts at a question. Further query submissions are locked after
-the third attempt.
+the third attempt; see [student quiz instructions](#student-quiz-instructions)
+for the full process.
