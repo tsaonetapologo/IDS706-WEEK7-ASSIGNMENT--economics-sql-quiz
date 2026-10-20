@@ -112,7 +112,7 @@ ECONOMIST_GUIDE = """
     <path d="M43 119h36" stroke="#17202b" stroke-width="2"/>
   </svg>
   <div class="economist-guide__copy">
-      <strong>Meet your economist &amp; data-scientist guide</strong>
+      <strong>Meet economist turned data scientist, Tsaone</strong>
       Your 25-year-old Black guide rocks a natural afro and a blue, black, and white
       dress, and is here to cheer you on through the data lab. 📈
   </div>
