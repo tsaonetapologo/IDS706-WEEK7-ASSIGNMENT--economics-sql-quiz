@@ -20,7 +20,8 @@ for 20 points total.
 5. Select **Show correct answer** to reveal the example SQL and expected result.
 
 Each question has its own three-attempt limit. The expected result can also be
-previewed in the hint expander.
+previewed in the hint expander. Use the **Dark mode** toggle in the sidebar to
+switch to a dark background.
 
 ## Stack and access controls
 

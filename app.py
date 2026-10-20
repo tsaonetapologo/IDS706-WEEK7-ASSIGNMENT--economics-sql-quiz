@@ -22,6 +22,11 @@ from quiz import (
 ANSWER_REVEAL_ATTEMPTS = 3
 
 st.set_page_config(page_title="Economics SQL Quiz", page_icon="📊", layout="wide")
+dark_mode = st.sidebar.toggle(
+    "Dark mode",
+    key="dark_mode",
+    help="Switch the quiz to a dark background.",
+)
 st.markdown(
     """
     <style>
@@ -87,6 +92,48 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+if dark_mode:
+    st.markdown(
+        """
+        <style>
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stHeader"],
+        [data-testid="stSidebar"] {
+            background-color: #111827;
+            color: #f3f4f6;
+        }
+        .stApp [data-testid="stMarkdownContainer"],
+        .stApp label,
+        .stApp [data-testid="stCaptionContainer"] {
+            color: #f3f4f6;
+        }
+        [data-testid="stTextArea"] textarea,
+        [data-testid="stTextInput"] input,
+        [data-baseweb="select"] > div {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+        [data-testid="stExpander"],
+        [data-testid="stAlert"] {
+            background-color: #1f2937;
+            color: #f3f4f6;
+        }
+        .economist-guide {
+            border-color: rgba(209, 213, 219, 0.2);
+            background: linear-gradient(115deg, rgba(40, 95, 168, 0.24), rgba(31, 41, 55, 0.94));
+        }
+        .country-flag-strip {
+            border-color: rgba(209, 213, 219, 0.16);
+            background: linear-gradient(110deg, rgba(40, 95, 168, 0.2), rgba(31, 41, 55, 0.9));
+        }
+        .country-flag-strip__label {
+            color: #d1d5db;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 ECONOMIST_GUIDE = """
 <div class="economist-guide">
