@@ -1,0 +1,5 @@
+python-dotenv>=1.0,<2
+pglast>=7.0,<8
+psycopg[binary]>=3.2,<4
+streamlit>=1.40,<2
+supabase>=2.0,<3
