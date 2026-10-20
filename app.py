@@ -182,6 +182,11 @@ def show_authentication() -> bool:
         ECONOMIST_GUIDE,
         unsafe_allow_html=True,
     )
+    st.info(
+        "Each question gives you **three query attempts**. After the third attempt, "
+        "you can no longer submit a query for that question. Click **Show correct "
+        "answer** to reveal the solution."
+    )
     sign_in_tab, sign_up_tab = st.tabs(["Sign in", "Create account"])
 
     with sign_in_tab:
@@ -237,6 +242,11 @@ st.write(
 )
 st.markdown(ECONOMIST_GUIDE, unsafe_allow_html=True)
 st.info("Five coding questions · 4 points each · 20 points total")
+st.warning(
+    "You have **three query attempts per question**. After your third attempt, "
+    "query submission is locked for that question. Click **Show correct answer** "
+    "to view the solution."
+)
 
 if not SUPABASE_DATABASE_URL:
     st.error(
@@ -296,12 +306,20 @@ with st.form(f"query_form_{question['number']}"):
         key=query_key,
         height=220,
         placeholder="SELECT country\nFROM public.economic_indicators\nORDER BY country;",
+        disabled=st.session_state[attempt_key] >= ANSWER_REVEAL_ATTEMPTS,
     )
     run_query, save_query = st.columns(2)
     with run_query:
-        run_clicked = st.form_submit_button("Run query", type="primary")
+        run_clicked = st.form_submit_button(
+            "Run query",
+            type="primary",
+            disabled=st.session_state[attempt_key] >= ANSWER_REVEAL_ATTEMPTS,
+        )
     with save_query:
-        save_clicked = st.form_submit_button("Save query")
+        save_clicked = st.form_submit_button(
+            "Save query",
+            disabled=st.session_state[attempt_key] >= ANSWER_REVEAL_ATTEMPTS,
+        )
 
 if run_clicked:
     st.session_state[attempt_key] += 1
@@ -324,9 +342,14 @@ if run_clicked:
 attempts = st.session_state[attempt_key]
 if attempts < ANSWER_REVEAL_ATTEMPTS:
     st.caption(
-        f"Run {ANSWER_REVEAL_ATTEMPTS - attempts} more "
+        f"You have {ANSWER_REVEAL_ATTEMPTS - attempts} "
         f"{'query' if ANSWER_REVEAL_ATTEMPTS - attempts == 1 else 'queries'} "
-        "to unlock the correct answer."
+        "left. The correct answer unlocks after your third attempt."
+    )
+else:
+    st.info(
+        "You have used all three attempts for this question. Query submission is "
+        "locked; click **Show correct answer** below to view the solution."
     )
 
 show_answer = st.button(

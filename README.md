@@ -68,9 +68,9 @@ streamlit run app.py
 Open the local URL printed by Streamlit, create an account or sign in, choose a
 question, write SQL, and select **Run query** to see live database rows.
 **Save query** stores that question's SQL under the signed-in user's account.
-Use the hint expander to preview the expected result. The app checks each query
-result against that answer; after three attempts on a question, **Show correct
-answer** reveals the example SQL and expected result.
+Use the hint expander to preview the expected result. Each question allows three
+query attempts; after the third, query submission is locked. Click **Show correct
+answer** to reveal the example SQL and expected result.
 
 Run the local test suite with:
 
@@ -111,4 +111,5 @@ with a superuser query path.
 All questions require writing SQL; none are multiple choice. They cover
 sorting, filtering, aggregation, counting, and population thresholds. Students
 can compare their result with the expected rows, and reveal the example SQL
-after three attempts at a question.
+after three attempts at a question. Further query submissions are locked after
+the third attempt.
