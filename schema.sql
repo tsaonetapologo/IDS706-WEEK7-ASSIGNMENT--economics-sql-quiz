@@ -1,12 +1,20 @@
 -- Run once in the Supabase SQL Editor for the project used by this app.
 CREATE TABLE IF NOT EXISTS public.economic_indicators (
     country text NOT NULL,
-    year integer NOT NULL,
+    year integer NOT NULL DEFAULT 2024,
     gdp_per_capita numeric NOT NULL,
     inflation_rate numeric NOT NULL,
     unemployment_rate numeric NOT NULL,
     population bigint NOT NULL
 );
+
+-- Also update an existing table, since CREATE TABLE IF NOT EXISTS does not
+-- change defaults on columns created before this setup script was updated.
+ALTER TABLE public.economic_indicators
+    ALTER COLUMN year SET DEFAULT 2024;
+UPDATE public.economic_indicators
+SET year = 2024
+WHERE year IS NULL;
 
 CREATE UNIQUE INDEX IF NOT EXISTS economic_indicators_country_quiz_uidx
     ON public.economic_indicators (country);

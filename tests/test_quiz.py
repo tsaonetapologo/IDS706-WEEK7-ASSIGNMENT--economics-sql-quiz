@@ -27,8 +27,11 @@ class QuizContentTests(unittest.TestCase):
 
     def test_supabase_setup_sql_parses(self) -> None:
         schema = Path(__file__).resolve().parents[1] / "schema.sql"
-        statements = parse_sql(schema.read_text())
+        schema_sql = schema.read_text()
+        statements = parse_sql(schema_sql)
         self.assertGreater(len(statements), 0)
+        self.assertIn("ALTER COLUMN year SET DEFAULT 2024", schema_sql)
+        self.assertIn("WHERE year IS NULL", schema_sql)
 
 
 class QuerySafetyTests(unittest.TestCase):
