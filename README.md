@@ -1,7 +1,6 @@
 # Economics SQL Quiz
 
-**Quiz site:** Not deployed yet. After deploying the app, replace this line with
-its public Streamlit URL (for example, `https://your-app-name.streamlit.app`).
+**Quiz site:** https://ids706-week7-assignment--economics-sql-quiz-cdqjbyzzrxtpiyyepq.streamlit.app/
 
 This project is a Streamlit SQL lab backed by a hosted Supabase PostgreSQL
 database. Students create an account or sign in, write a query for one of five
