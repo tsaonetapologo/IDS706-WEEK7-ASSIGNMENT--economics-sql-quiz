@@ -7,7 +7,13 @@ from unittest.mock import MagicMock, patch
 from pglast import parse_sql
 from pglast.ast import SelectStmt
 
-from quiz import QUESTIONS, run_read_only_query, validate_read_only_query
+from quiz import (
+    COUNTRY_FLAGS,
+    QUESTIONS,
+    add_country_flags,
+    run_read_only_query,
+    validate_read_only_query,
+)
 
 
 class QuizContentTests(unittest.TestCase):
@@ -16,6 +22,26 @@ class QuizContentTests(unittest.TestCase):
         self.assertEqual(sum(question["points"] for question in QUESTIONS), 20)
         self.assertTrue(all("prompt" in question for question in QUESTIONS))
         self.assertTrue(all("expected_rows" in question for question in QUESTIONS))
+
+    def test_flags_cover_all_dataset_countries_and_appear_in_result_rows(self) -> None:
+        self.assertEqual(
+            set(COUNTRY_FLAGS),
+            {
+                "Botswana",
+                "Ghana",
+                "Kenya",
+                "Mauritius",
+                "Namibia",
+                "Nigeria",
+                "Rwanda",
+                "South Africa",
+                "Uganda",
+                "Zambia",
+            },
+        )
+        rows = add_country_flags([{"country": "Botswana", "year": 2024}])
+        self.assertEqual(rows, [{"Flag": "🇧🇼", "country": "Botswana", "year": 2024}])
+        self.assertEqual(add_country_flags([{"year": 2024}]), [{"year": 2024}])
 
     def test_expected_sql_is_select_and_matches_one_statement(self) -> None:
         for question in QUESTIONS:

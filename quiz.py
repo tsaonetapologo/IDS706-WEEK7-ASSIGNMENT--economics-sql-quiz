@@ -9,6 +9,29 @@ MAX_QUERY_LENGTH = 10_000
 MAX_RESULT_ROWS = 500
 QUERY_TIMEOUT_MS = 5_000
 
+COUNTRY_FLAGS = {
+    "Botswana": "🇧🇼",
+    "Ghana": "🇬🇭",
+    "Kenya": "🇰🇪",
+    "Mauritius": "🇲🇺",
+    "Namibia": "🇳🇦",
+    "Nigeria": "🇳🇬",
+    "Rwanda": "🇷🇼",
+    "South Africa": "🇿🇦",
+    "Uganda": "🇺🇬",
+    "Zambia": "🇿🇲",
+}
+
+
+def add_country_flags(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {"Flag": COUNTRY_FLAGS.get(str(row.get("country", "")), ""), **row}
+        if "country" in row
+        else row
+        for row in rows
+    ]
+
+
 QUESTIONS: list[dict[str, Any]] = [
     {
         "number": 1,

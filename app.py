@@ -10,39 +10,77 @@ from streamlit.errors import StreamlitSecretNotFoundError
 from supabase import Client, create_client
 from supabase_auth.errors import AuthApiError
 
-from quiz import QUESTIONS, run_read_only_query
+from quiz import QUESTIONS, add_country_flags, run_read_only_query
 
 
 st.set_page_config(page_title="Economics SQL Quiz", page_icon="📊", layout="wide")
 st.markdown(
     """
     <style>
-    .quiz-mascot {
+    .economist-guide {
         display: flex;
         align-items: center;
-        gap: 0.9rem;
+        gap: 1.15rem;
         padding: 1rem 1.25rem;
-        margin: 0.25rem 0 1rem;
+        margin: 0.75rem 0 1rem;
         border: 1px solid rgba(49, 51, 63, 0.15);
         border-radius: 1rem;
-        background: linear-gradient(115deg, rgba(255, 205, 86, 0.2), rgba(82, 196, 166, 0.13));
+        background: linear-gradient(115deg, rgba(40, 95, 168, 0.12), rgba(255, 255, 255, 0.72));
     }
-    .quiz-mascot__face {
-        font-size: 2.6rem;
-        line-height: 1;
+    .economist-guide__portrait {
+        width: 100px;
+        min-width: 100px;
+        height: 126px;
     }
-    .quiz-mascot__copy {
-        font-size: 1rem;
+    .economist-guide__copy {
+        font-size: 0.98rem;
     }
-    .quiz-mascot__copy strong {
+    .economist-guide__copy strong {
         display: block;
-        font-size: 1.1rem;
-        margin-bottom: 0.15rem;
+        font-size: 1.15rem;
+        margin-bottom: 0.25rem;
+    }
+    @media (max-width: 480px) {
+        .economist-guide {
+            gap: 0.65rem;
+            padding: 0.8rem;
+        }
+        .economist-guide__portrait {
+            width: 78px;
+            min-width: 78px;
+            height: 108px;
+        }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+ECONOMIST_GUIDE = """
+<div class="economist-guide">
+  <svg class="economist-guide__portrait" viewBox="0 0 100 126"
+       role="img" aria-labelledby="economist-title" xmlns="http://www.w3.org/2000/svg">
+    <title id="economist-title">Illustration of a young Black economist in a blue, black, and white dress</title>
+    <circle cx="50" cy="50" r="43" fill="#e7f0fc"/>
+    <path d="M27 43c-4-22 8-34 24-34 18 0 27 13 23 35l-4 14H31z" fill="#171717"/>
+    <ellipse cx="51" cy="43" rx="19" ry="23" fill="#75452f"/>
+    <path d="M32 40c0-19 8-28 20-28 13 0 22 9 22 25-7-3-11-8-14-15-7 8-16 13-28 14z" fill="#171717"/>
+    <path d="M42 43h5m10 0h5" stroke="#211915" stroke-width="2" stroke-linecap="round"/>
+    <path d="M47 53c3 2 6 2 9 0" fill="none" stroke="#512b22" stroke-width="1.7" stroke-linecap="round"/>
+    <path d="M38 66l-8 7-8 26 9 3 9-17 1 34h39l-1-34 9 17 8-4-10-27-13-8-12-3H49z" fill="#285fa8"/>
+    <path d="M48 63l3 8-9 8 8 15 3 25h19l-2-28 7-12-11-8 2-8-10 5z" fill="#fff" stroke="#17202b" stroke-width="1"/>
+    <path d="M70 65l13 8 8 26-9 4-9-17 1 32H69l-3-24 7-18-9-8z" fill="#171717"/>
+    <path d="M50 71l5 4 5-4" fill="none" stroke="#285fa8" stroke-width="2"/>
+    <path d="M21 102l9 3m58-3-9 3" stroke="#75452f" stroke-width="4" stroke-linecap="round"/>
+    <path d="M43 119h36" stroke="#17202b" stroke-width="2"/>
+  </svg>
+  <div class="economist-guide__copy">
+    <strong>Meet your economist guide</strong>
+    A 25-year-old Black economist, illustrated in a blue, black, and white dress,
+    is here to cheer you on through the data lab. 📈
+  </div>
+</div>
+"""
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
@@ -93,15 +131,7 @@ def show_authentication() -> bool:
     st.title("📊 Economics SQL Quiz")
     st.write("Sign in or create an account to write and run SQL against the live database.")
     st.markdown(
-        """
-        <div class="quiz-mascot">
-          <span class="quiz-mascot__face" role="img" aria-label="Professor Panda">🐼</span>
-          <div class="quiz-mascot__copy">
-            <strong>Professor Panda says: ready, set, SELECT!</strong>
-            Sign in to explore the data and save your SQL work.
-          </div>
-        </div>
-        """,
+        ECONOMIST_GUIDE,
         unsafe_allow_html=True,
     )
     sign_in_tab, sign_up_tab = st.tabs(["Sign in", "Create account"])
@@ -157,20 +187,7 @@ st.write(
     "Write SQL for each question, run it against the live `economic_indicators` "
     "table, and compare your result with the expected output."
 )
-st.markdown(
-    """
-    <div class="quiz-mascot">
-      <span class="quiz-mascot__face" role="img" aria-label="Professor Panda">🐼</span>
-      <div class="quiz-mascot__copy">
-        <strong>Professor Panda's data lab</strong>
-        Five SQL challenges, live country data, and 20 points up for grabs. Keep
-        queries curious and read-only!
-      </div>
-      <span class="quiz-mascot__face" role="img" aria-label="Sparkles">✨</span>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown(ECONOMIST_GUIDE, unsafe_allow_html=True)
 st.info("Five coding questions · 4 points each · 20 points total")
 
 if not SUPABASE_DATABASE_URL:
@@ -210,7 +227,12 @@ st.caption("🐼 Professor Panda's tip: run your query, inspect the rows, then s
 with st.expander("Hint: expected SQL and result"):
     st.code(question["sql"], language="sql")
     st.write("**Expected result**")
-    st.dataframe(question["expected_rows"], use_container_width=True, hide_index=True)
+    st.dataframe(
+        add_country_flags(question["expected_rows"]),
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption("Country flags are display-only; write SQL using the database column values.")
 
 query_key = f"query_{question['number']}"
 if query_key not in st.session_state:
@@ -262,8 +284,11 @@ if save_clicked:
 result = st.session_state.get(f"result_{question['number']}")
 if result is not None:
     st.subheader("Query result")
+    result_rows = [dict(zip(result["columns"], row)) for row in result["rows"]]
+    if result_rows and "country" in result_rows[0]:
+        result_rows = add_country_flags(result_rows)
     st.dataframe(
-        [dict(zip(result["columns"], row)) for row in result["rows"]],
+        result_rows,
         use_container_width=True,
         hide_index=True,
     )
