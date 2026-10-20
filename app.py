@@ -92,7 +92,7 @@ ECONOMIST_GUIDE = """
 <div class="economist-guide">
   <svg class="economist-guide__portrait" viewBox="0 0 100 126"
        role="img" aria-labelledby="economist-title" xmlns="http://www.w3.org/2000/svg">
-    <title id="economist-title">Illustration of a young Black economist with an afro, wearing a blue, black, and white dress</title>
+    <title id="economist-title">Illustration of Tsaone, a young Black economist with an afro and glasses, wearing a blue, black, and white dress and holding iced coffee</title>
     <circle cx="50" cy="50" r="43" fill="#e7f0fc"/>
     <path d="M32 59c-7-3-10-10-7-17-6-7-4-16 3-21-1-9 7-16 15-14 5-8 16-8 21-1 9-2 17 5 16 14 8 5 10 14 4 21 3 8-1 15-8 18l-7-3H37z" fill="#171717"/>
     <circle cx="34" cy="27" r="2.2" fill="#302b2b"/>
@@ -102,6 +102,8 @@ ECONOMIST_GUIDE = """
     <circle cx="73" cy="30" r="2.2" fill="#302b2b"/>
     <ellipse cx="51" cy="43" rx="19" ry="23" fill="#75452f"/>
     <path d="M33 34c4-11 12-16 20-16 9 0 15 4 19 12-7-2-12-5-15-10-7 7-15 11-24 14z" fill="#171717"/>
+    <path d="M37 41h11c2 0 3 2 3 4s-1 5-4 5h-7c-3 0-4-2-4-5s0-4 1-4zm17 0h11c1 0 2 2 2 4s-1 5-4 5h-6c-3 0-4-2-4-5s0-4 1-4z" fill="none" stroke="#171717" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M51 44h4m-19 0-3-1m33 1 3-1" fill="none" stroke="#171717" stroke-width="2" stroke-linecap="round"/>
     <path d="M42 43h5m10 0h5" stroke="#211915" stroke-width="2" stroke-linecap="round"/>
     <path d="M47 53c3 2 6 2 9 0" fill="none" stroke="#512b22" stroke-width="1.7" stroke-linecap="round"/>
     <path d="M38 66l-8 7-8 26 9 3 9-17 1 34h39l-1-34 9 17 8-4-10-27-13-8-12-3H49z" fill="#285fa8"/>
@@ -119,9 +121,9 @@ ECONOMIST_GUIDE = """
   </svg>
   <div class="economist-guide__copy">
       <strong>Meet economist turned data scientist, Tsaone</strong>
-      Your 25-year-old Black guide rocks a natural afro and a blue, black, and white
-      dress, and is here to cheer you on through the data lab with an iced coffee
-      in hand. 📈
+      Your 25-year-old Black guide rocks a natural afro, glasses, and a blue, black,
+      and white dress. She is here to cheer you on through the data lab with an iced
+      coffee in hand. 📈
   </div>
 </div>
 """
