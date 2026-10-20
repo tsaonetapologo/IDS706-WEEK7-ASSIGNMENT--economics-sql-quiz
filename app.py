@@ -92,7 +92,7 @@ ECONOMIST_GUIDE = """
 <div class="economist-guide">
   <svg class="economist-guide__portrait" viewBox="0 0 100 126"
        role="img" aria-labelledby="economist-title" xmlns="http://www.w3.org/2000/svg">
-    <title id="economist-title">Illustration of Tsaone from Botswana, a young economist with an afro and glasses, wearing a blue, black, and white dress and holding iced coffee</title>
+    <title id="economist-title">Illustration of Tsaone, a 25-year-old guide from Botswana with an afro and glasses, wearing a blue, black, and white dress and holding iced coffee</title>
     <circle cx="50" cy="50" r="43" fill="#e7f0fc"/>
     <path d="M32 59c-7-3-10-10-7-17-6-7-4-16 3-21-1-9 7-16 15-14 5-8 16-8 21-1 9-2 17 5 16 14 8 5 10 14 4 21 3 8-1 15-8 18l-7-3H37z" fill="#171717"/>
     <circle cx="34" cy="27" r="2.2" fill="#302b2b"/>
@@ -121,9 +121,8 @@ ECONOMIST_GUIDE = """
   </svg>
   <div class="economist-guide__copy">
       <strong>Meet economist turned data scientist, Tsaone</strong>
-      Your 25-year-old guide from Botswana rocks a natural afro, glasses, and a
-      blue, black, and white dress. She is here to cheer you on through the data
-      lab with an iced coffee in hand. 📈
+      Your 25-year-old guide from Botswana. She is here to cheer you on through the
+      data lab with an iced coffee in hand. 📈
   </div>
 </div>
 """
