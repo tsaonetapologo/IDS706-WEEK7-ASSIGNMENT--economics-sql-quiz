@@ -1,5 +1,6 @@
 import unittest
 from contextlib import nullcontext
+from decimal import Decimal
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
@@ -11,6 +12,7 @@ from quiz import (
     COUNTRY_FLAGS,
     QUESTIONS,
     add_country_flags,
+    results_match_expected,
     run_read_only_query,
     validate_read_only_query,
 )
@@ -50,6 +52,42 @@ class QuizContentTests(unittest.TestCase):
                 self.assertEqual(len(statements), 1)
                 self.assertIsInstance(statements[0].stmt, SelectStmt)
                 validate_read_only_query(question["sql"])
+
+    def test_results_match_expected_ignoring_column_and_row_order(self) -> None:
+        expected = [
+            {"country": "Mauritius", "gdp_per_capita": 12500},
+            {"country": "Botswana", "gdp_per_capita": 7200},
+        ]
+        self.assertTrue(
+            results_match_expected(
+                ["gdp_per_capita", "country"],
+                [(7200, "Botswana"), (12500, "Mauritius")],
+                expected,
+            )
+        )
+        self.assertFalse(
+            results_match_expected(
+                ["country", "gdp_per_capita"],
+                [("Botswana", 7100), ("Mauritius", 12500)],
+                expected,
+            )
+        )
+        self.assertFalse(
+            results_match_expected(
+                ["country"],
+                [("Botswana",), ("Mauritius",)],
+                expected,
+            )
+        )
+
+    def test_results_match_expected_handles_postgres_decimal_values(self) -> None:
+        self.assertTrue(
+            results_match_expected(
+                ["average_inflation"],
+                [(Decimal("9.07"),)],
+                [{"average_inflation": 9.07}],
+            )
+        )
 
     def test_supabase_setup_sql_parses(self) -> None:
         schema = Path(__file__).resolve().parents[1] / "schema.sql"

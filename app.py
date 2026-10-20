@@ -10,8 +10,16 @@ from streamlit.errors import StreamlitSecretNotFoundError
 from supabase import Client, create_client
 from supabase_auth.errors import AuthApiError
 
-from quiz import COUNTRY_FLAGS, QUESTIONS, add_country_flags, run_read_only_query
+from quiz import (
+    COUNTRY_FLAGS,
+    QUESTIONS,
+    add_country_flags,
+    results_match_expected,
+    run_read_only_query,
+)
 
+
+ANSWER_REVEAL_ATTEMPTS = 3
 
 st.set_page_config(page_title="Economics SQL Quiz", page_icon="📊", layout="wide")
 st.markdown(
@@ -163,7 +171,7 @@ def show_authentication() -> bool:
                 for key in ("user_id", "user_email", "saved_queries"):
                     st.session_state.pop(key, None)
                 for key in list(st.session_state):
-                    if key.startswith(("query_", "result_")):
+                    if key.startswith(("query_", "result_", "attempt_", "answer_")):
                         st.session_state.pop(key, None)
                 st.rerun()
         return True
@@ -265,8 +273,7 @@ st.markdown(COUNTRY_FLAG_STRIP, unsafe_allow_html=True)
 st.markdown(question["prompt"])
 st.caption("Your economist guide's tip: run your query, inspect the rows, then save your solution.")
 
-with st.expander("Hint: expected SQL and result"):
-    st.code(question["sql"], language="sql")
+with st.expander("Hint: expected result"):
     st.write("**Expected result**")
     st.dataframe(
         add_country_flags(question["expected_rows"]),
@@ -276,8 +283,12 @@ with st.expander("Hint: expected SQL and result"):
     st.caption("Country flags are display-only; write SQL using the database column values.")
 
 query_key = f"query_{question['number']}"
+attempt_key = f"attempt_{question['number']}"
+answer_key = f"answer_visible_{question['number']}"
 if query_key not in st.session_state:
     st.session_state[query_key] = saved_queries.get(question["number"], "")
+if attempt_key not in st.session_state:
+    st.session_state[attempt_key] = 0
 
 with st.form(f"query_form_{question['number']}"):
     query = st.text_area(
@@ -293,17 +304,48 @@ with st.form(f"query_form_{question['number']}"):
         save_clicked = st.form_submit_button("Save query")
 
 if run_clicked:
+    st.session_state[attempt_key] += 1
+    st.session_state.pop(f"result_{question['number']}", None)
     try:
         columns, rows, truncated = run_read_only_query(SUPABASE_DATABASE_URL, query)
         st.session_state[f"result_{question['number']}"] = {
             "columns": columns,
             "rows": rows,
             "truncated": truncated,
+            "correct": results_match_expected(
+                columns, rows, question["expected_rows"]
+            ),
         }
     except ValueError as error:
         st.error(str(error))
     except PsycopgError as error:
         st.error(f"Query failed: {error}")
+
+attempts = st.session_state[attempt_key]
+if attempts < ANSWER_REVEAL_ATTEMPTS:
+    st.caption(
+        f"Run {ANSWER_REVEAL_ATTEMPTS - attempts} more "
+        f"{'query' if ANSWER_REVEAL_ATTEMPTS - attempts == 1 else 'queries'} "
+        "to unlock the correct answer."
+    )
+
+show_answer = st.button(
+    "Show correct answer",
+    key=f"show_answer_{question['number']}",
+    disabled=attempts < ANSWER_REVEAL_ATTEMPTS,
+)
+if show_answer:
+    st.session_state[answer_key] = True
+
+if st.session_state.get(answer_key):
+    st.subheader("Correct answer")
+    st.code(question["sql"], language="sql")
+    st.write("**Expected result**")
+    st.dataframe(
+        add_country_flags(question["expected_rows"]),
+        use_container_width=True,
+        hide_index=True,
+    )
 
 if save_clicked:
     if not query.strip():
@@ -325,6 +367,10 @@ if save_clicked:
 result = st.session_state.get(f"result_{question['number']}")
 if result is not None:
     st.subheader("Query result")
+    if result["correct"]:
+        st.success("Correct! Your query returns the expected result.")
+    else:
+        st.warning("Not quite yet. Review the result and try another query.")
     result_rows = [dict(zip(result["columns"], row)) for row in result["rows"]]
     if result_rows and "country" in result_rows[0]:
         result_rows = add_country_flags(result_rows)

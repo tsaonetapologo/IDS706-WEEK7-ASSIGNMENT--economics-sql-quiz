@@ -1,3 +1,5 @@
+from decimal import Decimal
+from numbers import Number
 from typing import Any
 
 import psycopg
@@ -30,6 +32,52 @@ def add_country_flags(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         else row
         for row in rows
     ]
+
+
+def results_match_expected(
+    columns: list[str],
+    rows: list[tuple[Any, ...]],
+    expected_rows: list[dict[str, Any]],
+) -> bool:
+    if not expected_rows:
+        return not rows
+
+    expected_columns = set(expected_rows[0])
+    if len(columns) != len(expected_columns) or set(columns) != expected_columns:
+        return False
+    if len(rows) != len(expected_rows):
+        return False
+
+    remaining_expected = list(expected_rows)
+    for row in rows:
+        actual = dict(zip(columns, row))
+        matching_index = next(
+            (
+                index
+                for index, expected in enumerate(remaining_expected)
+                if all(
+                    _values_match(actual[column], expected[column])
+                    for column in expected_columns
+                )
+            ),
+            None,
+        )
+        if matching_index is None:
+            return False
+        remaining_expected.pop(matching_index)
+
+    return not remaining_expected
+
+
+def _values_match(actual: Any, expected: Any) -> bool:
+    if (
+        isinstance(actual, Number)
+        and not isinstance(actual, bool)
+        and isinstance(expected, Number)
+        and not isinstance(expected, bool)
+    ):
+        return Decimal(str(actual)) == Decimal(str(expected))
+    return actual == expected
 
 
 QUESTIONS: list[dict[str, Any]] = [
