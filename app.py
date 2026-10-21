@@ -349,7 +349,11 @@ st.markdown(COUNTRY_FLAG_STRIP, unsafe_allow_html=True)
 st.markdown(question["prompt"])
 st.caption("Your economist guide's tip: run your query, inspect the rows, then save your solution.")
 
-with st.expander("Hint: expected result"):
+answer_key = f"answer_visible_{question['number']}"
+hint_expanded = bool(st.session_state.get(answer_key, False))
+with st.expander("Hint: expected SQL and expected result", expanded=hint_expanded):
+    if hint_expanded:
+        st.code(question["sql"], language="sql")
     st.write("**Expected result**")
     st.dataframe(
         add_country_flags(question["expected_rows"]),
@@ -360,7 +364,6 @@ with st.expander("Hint: expected result"):
 
 query_key = f"query_{question['number']}"
 attempt_key = f"attempt_{question['number']}"
-answer_key = f"answer_visible_{question['number']}"
 if query_key not in st.session_state:
     st.session_state[query_key] = saved_queries.get(question["number"], "")
 if attempt_key not in st.session_state:
@@ -425,15 +428,7 @@ show_answer = st.button(
 )
 if show_answer:
     st.session_state[answer_key] = True
-
-if st.session_state.get(answer_key):
-    with st.expander("Hint: expected SQL and expected result", expanded=True):
-        st.code(question["sql"], language="sql")
-        st.dataframe(
-            add_country_flags(question["expected_rows"]),
-            use_container_width=True,
-            hide_index=True,
-        )
+    st.rerun()
 
 if save_clicked:
     if not query.strip():
