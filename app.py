@@ -427,14 +427,13 @@ if show_answer:
     st.session_state[answer_key] = True
 
 if st.session_state.get(answer_key):
-    st.subheader("Correct answer")
-    st.code(question["sql"], language="sql")
-    st.write("**Expected result**")
-    st.dataframe(
-        add_country_flags(question["expected_rows"]),
-        use_container_width=True,
-        hide_index=True,
-    )
+    with st.expander("Hint: expected SQL and expected result", expanded=True):
+        st.code(question["sql"], language="sql")
+        st.dataframe(
+            add_country_flags(question["expected_rows"]),
+            use_container_width=True,
+            hide_index=True,
+        )
 
 if save_clicked:
     if not query.strip():
