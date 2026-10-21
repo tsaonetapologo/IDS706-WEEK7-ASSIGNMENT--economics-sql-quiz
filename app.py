@@ -96,12 +96,24 @@ if dark_mode:
     st.markdown(
         """
         <style>
+        :root {
+            color-scheme: dark;
+            --background-color: #111827;
+            --secondary-background-color: #1f2937;
+            --text-color: #f3f4f6;
+            --primary-color: #60a5fa;
+        }
+        html,
+        body,
         .stApp,
         [data-testid="stAppViewContainer"],
+        [data-testid="stMain"],
+        [data-testid="stMainBlockContainer"],
         [data-testid="stHeader"],
-        [data-testid="stSidebar"] {
-            background-color: #111827;
-            color: #f3f4f6;
+        [data-testid="stSidebar"],
+        [data-testid="stSidebarContent"] {
+            background-color: #111827 !important;
+            color: #f3f4f6 !important;
         }
         .stApp [data-testid="stMarkdownContainer"],
         .stApp label,
