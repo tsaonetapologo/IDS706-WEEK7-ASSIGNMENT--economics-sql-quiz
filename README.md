@@ -12,18 +12,12 @@ for 20 points total.
 
 1. Create an account or sign in.
 2. Choose a question and write a SQL query.
-3. Select **Run query** to use one of your three attempts for that question.
-   Attempts are counted when **Run query** is selected, including when the
-   query returns an error.
-4. Review the result and try again if needed. After the third attempt, the
-   query editor and query buttons are locked for that question.
-5. After using all three attempts, select **Show correct answer** to open the hint.
+3. Select **Run query** to execute your SQL and see the live result.
+4. Review the result, edit your query, and run it again as often as you need.
 
 Each question's hint expander contains both the expected SQL and expected result
-from the start. Each question also has a three-attempt query limit; after the
-third attempt, submissions are locked. Select **Show correct answer** to open
-the answer hint. Use the **Dark mode** toggle in the sidebar to switch to a dark
-background.
+from the start. Query attempts are unlimited. Use the **Dark mode** toggle in
+the sidebar to switch to a dark background.
 
 ## Stack and access controls
 
@@ -86,7 +80,7 @@ Open the local URL printed by Streamlit, create an account or sign in, choose a
 question, write SQL, and select **Run query** to see live database rows.
 **Save query** stores that question's SQL under the signed-in user's account.
 Follow the [student quiz instructions](#student-quiz-instructions) for the
-attempt limit and answer reveal.
+unlimited attempts and hint details.
 
 Run the local test suite with:
 
@@ -126,7 +120,6 @@ with a superuser query path.
 
 All questions require writing SQL; none are multiple choice. They cover
 sorting, filtering, aggregation, counting, and population thresholds. Students
-can compare their result with the expected rows, and reveal the example SQL
-after three attempts at a question. Further query submissions are locked after
-the third attempt; see [student quiz instructions](#student-quiz-instructions)
-for the full process.
+can compare their result with the expected rows and see the example SQL in each
+question's hint from the start. Students may submit unlimited query attempts;
+see [student quiz instructions](#student-quiz-instructions) for the full process.

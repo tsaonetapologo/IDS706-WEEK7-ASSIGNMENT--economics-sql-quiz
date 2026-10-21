@@ -19,8 +19,6 @@ from quiz import (
 )
 
 
-ANSWER_REVEAL_ATTEMPTS = 3
-
 st.set_page_config(page_title="Economics SQL Quiz", page_icon="📊", layout="wide")
 dark_mode = st.sidebar.toggle(
     "Dark mode",
@@ -237,7 +235,7 @@ def show_authentication() -> bool:
                 for key in ("user_id", "user_email", "saved_queries"):
                     st.session_state.pop(key, None)
                 for key in list(st.session_state):
-                    if key.startswith(("query_", "result_", "attempt_", "answer_")):
+                    if key.startswith(("query_", "result_")):
                         st.session_state.pop(key, None)
                 st.rerun()
         return True
@@ -248,11 +246,7 @@ def show_authentication() -> bool:
         ECONOMIST_GUIDE,
         unsafe_allow_html=True,
     )
-    st.info(
-        "Each question gives you **three query attempts**. After the third attempt, "
-        "you can no longer submit a query for that question. Click **Show correct "
-        "answer** to reveal the solution."
-    )
+    st.info("Quiz attempts are **unlimited**. Use the hint in each question whenever you need help.")
     sign_in_tab, sign_up_tab = st.tabs(["Sign in", "Create account"])
 
     with sign_in_tab:
@@ -308,11 +302,7 @@ st.write(
 )
 st.markdown(ECONOMIST_GUIDE, unsafe_allow_html=True)
 st.info("Five coding questions · 4 points each · 20 points total")
-st.warning(
-    "You have **three query attempts per question**. After your third attempt, "
-    "query submission is locked for that question. Click **Show correct answer** "
-    "to view the solution."
-)
+st.success("Attempts are unlimited. Run each query as many times as you need.")
 
 if not SUPABASE_DATABASE_URL:
     st.error(
@@ -350,17 +340,10 @@ st.markdown(question["prompt"])
 st.caption("Your economist guide's tip: run your query, inspect the rows, then save your solution.")
 
 query_key = f"query_{question['number']}"
-attempt_key = f"attempt_{question['number']}"
-answer_key = f"answer_visible_{question['number']}"
 if query_key not in st.session_state:
     st.session_state[query_key] = saved_queries.get(question["number"], "")
-if attempt_key not in st.session_state:
-    st.session_state[attempt_key] = 0
 
-with st.expander(
-    "Hint: expected SQL and expected result",
-    expanded=st.session_state.get(answer_key, False),
-):
+with st.expander("Hint: expected SQL and expected result"):
     st.code(question["sql"], language="sql")
     st.write("**Expected result**")
     st.dataframe(
@@ -376,23 +359,17 @@ with st.form(f"query_form_{question['number']}"):
         key=query_key,
         height=220,
         placeholder="SELECT country\nFROM public.economic_indicators\nORDER BY country;",
-        disabled=st.session_state[attempt_key] >= ANSWER_REVEAL_ATTEMPTS,
     )
     run_query, save_query = st.columns(2)
     with run_query:
         run_clicked = st.form_submit_button(
             "Run query",
             type="primary",
-            disabled=st.session_state[attempt_key] >= ANSWER_REVEAL_ATTEMPTS,
         )
     with save_query:
-        save_clicked = st.form_submit_button(
-            "Save query",
-            disabled=st.session_state[attempt_key] >= ANSWER_REVEAL_ATTEMPTS,
-        )
+        save_clicked = st.form_submit_button("Save query")
 
 if run_clicked:
-    st.session_state[attempt_key] += 1
     st.session_state.pop(f"result_{question['number']}", None)
     try:
         columns, rows, truncated = run_read_only_query(SUPABASE_DATABASE_URL, query)
@@ -408,28 +385,6 @@ if run_clicked:
         st.error(str(error))
     except PsycopgError as error:
         st.error(f"Query failed: {error}")
-
-attempts = st.session_state[attempt_key]
-if attempts < ANSWER_REVEAL_ATTEMPTS:
-    st.caption(
-        f"You have {ANSWER_REVEAL_ATTEMPTS - attempts} "
-        f"{'query' if ANSWER_REVEAL_ATTEMPTS - attempts == 1 else 'queries'} "
-        "left for this question."
-    )
-else:
-    st.info(
-        "You have used all three attempts for this question. Query submission is "
-        "locked; click **Show correct answer** below to open the answer hint."
-    )
-
-show_answer = st.button(
-    "Show correct answer",
-    key=f"show_answer_{question['number']}",
-    disabled=attempts < ANSWER_REVEAL_ATTEMPTS,
-)
-if show_answer:
-    st.session_state[answer_key] = True
-    st.rerun()
 
 if save_clicked:
     if not query.strip():
