@@ -17,12 +17,13 @@ for 20 points total.
    query returns an error.
 4. Review the result and try again if needed. After the third attempt, the
    query editor and query buttons are locked for that question.
-5. Select **Show correct answer** to reveal the example SQL and expected result.
+5. After using all three attempts, select **Show correct answer** to open the hint.
 
-Each question has its own three-attempt limit. The expected result can be
-previewed in the hint expander. After three attempts, **Show correct answer**
-opens the hint with both the expected SQL and expected result. Use the **Dark
-mode** toggle in the sidebar to switch to a dark background.
+Each question's hint expander contains both the expected SQL and expected result
+from the start. Each question also has a three-attempt query limit; after the
+third attempt, submissions are locked. Select **Show correct answer** to open
+the answer hint. Use the **Dark mode** toggle in the sidebar to switch to a dark
+background.
 
 ## Stack and access controls
 

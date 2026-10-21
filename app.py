@@ -349,11 +349,19 @@ st.markdown(COUNTRY_FLAG_STRIP, unsafe_allow_html=True)
 st.markdown(question["prompt"])
 st.caption("Your economist guide's tip: run your query, inspect the rows, then save your solution.")
 
+query_key = f"query_{question['number']}"
+attempt_key = f"attempt_{question['number']}"
 answer_key = f"answer_visible_{question['number']}"
-hint_expanded = bool(st.session_state.get(answer_key, False))
-with st.expander("Hint: expected SQL and expected result", expanded=hint_expanded):
-    if hint_expanded:
-        st.code(question["sql"], language="sql")
+if query_key not in st.session_state:
+    st.session_state[query_key] = saved_queries.get(question["number"], "")
+if attempt_key not in st.session_state:
+    st.session_state[attempt_key] = 0
+
+with st.expander(
+    "Hint: expected SQL and expected result",
+    expanded=st.session_state.get(answer_key, False),
+):
+    st.code(question["sql"], language="sql")
     st.write("**Expected result**")
     st.dataframe(
         add_country_flags(question["expected_rows"]),
@@ -361,13 +369,6 @@ with st.expander("Hint: expected SQL and expected result", expanded=hint_expande
         hide_index=True,
     )
     st.caption("Country flags are display-only; write SQL using the database column values.")
-
-query_key = f"query_{question['number']}"
-attempt_key = f"attempt_{question['number']}"
-if query_key not in st.session_state:
-    st.session_state[query_key] = saved_queries.get(question["number"], "")
-if attempt_key not in st.session_state:
-    st.session_state[attempt_key] = 0
 
 with st.form(f"query_form_{question['number']}"):
     query = st.text_area(
@@ -413,12 +414,12 @@ if attempts < ANSWER_REVEAL_ATTEMPTS:
     st.caption(
         f"You have {ANSWER_REVEAL_ATTEMPTS - attempts} "
         f"{'query' if ANSWER_REVEAL_ATTEMPTS - attempts == 1 else 'queries'} "
-        "left. The correct answer unlocks after your third attempt."
+        "left for this question."
     )
 else:
     st.info(
         "You have used all three attempts for this question. Query submission is "
-        "locked; click **Show correct answer** below to view the solution."
+        "locked; click **Show correct answer** below to open the answer hint."
     )
 
 show_answer = st.button(
